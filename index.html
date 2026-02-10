@@ -201,6 +201,132 @@
             .floating-container { bottom: 15px; right: 15px; }
             .float-btn { width: 50px; height: 50px; font-size: 1.2rem; }
         }
+
+        /* --- YORUM DUVARI (REVIEWS WALL) STİLLERİ --- */
+.reviews-wall-section { 
+    background: #fdfdfd; 
+    overflow: hidden; 
+    position: relative; 
+    padding: 100px 0; 
+}
+
+.wall-wrapper { 
+    display: flex; 
+    gap: 20px; 
+    /* Üst ve alttan yumuşak geçiş efekti */
+    mask-image: linear-gradient(to bottom, transparent, black 8%, black 92%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 8%, black 92%, transparent);
+    height: 750px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Sütun Ayarları */
+.wall-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+    animation: scroll-up var(--duration, 40s) linear infinite;
+}
+
+/* Ters yöne akan sütun */
+.wall-column.reverse { 
+    animation: scroll-down var(--duration, 40s) linear infinite; 
+}
+
+/* Mouse ile üzerine gelince akışı durdur */
+.wall-column:hover { 
+    animation-play-state: paused; 
+}
+
+/* Yorum Kartı Tasarımı */
+.wall-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 2px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor: pointer;
+    position: relative;
+}
+
+.wall-card:hover { 
+    transform: scale(1.05); 
+    border-color: #D4AF37; /* Altın rengi */
+    z-index: 10;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.wall-card .stars { 
+    color: #D4AF37; 
+    font-size: 0.75rem; 
+    margin-bottom: 12px; 
+}
+
+/* Yorum Kartı İçindeki Metin Alanı */
+.wall-card p { 
+    font-size: 0.85rem; 
+    color: #555; 
+    line-height: 1.6;
+    margin-bottom: 15px; 
+    
+    /* Standart ve Webkit Uyumluluğu */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; /* Safari/Chrome/Legacy */
+    line-clamp: 3;         /* Standart Özellik */
+    
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* Hover (Üzerine Gelince) Metni Açma */
+.wall-card:hover p { 
+    -webkit-line-clamp: 12; /* Safari/Chrome/Legacy */
+    line-clamp: 12;         /* Standart Özellik */
+}
+
+.wall-card .name { 
+    font-weight: 600; 
+    font-size: 0.8rem; 
+    color: #4A4A4A; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+}
+
+.wall-card .name::before {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: #D4AF37;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+/* Animasyon Tanımları */
+@keyframes scroll-up {
+    from { transform: translateY(0); }
+    to { transform: translateY(-50%); }
+}
+
+@keyframes scroll-down {
+    from { transform: translateY(-50%); }
+    to { transform: translateY(0); }
+}
+
+/* Mobil Uyumluluk */
+@media (max-width: 1024px) {
+    .wall-column:nth-child(4) { display: none; }
+}
+@media (max-width: 768px) {
+    .wall-column:nth-child(3) { display: none; }
+    .wall-wrapper { height: 600px; }
+    .wall-column { --duration: 30s !important; }
+}
     </style>
 </head>
 <body>
@@ -247,7 +373,6 @@
     <section class="hero" id="home" style="max-width: 100%; margin: 0;">
         <div class="hero-content" data-aos="fade-up" data-aos-duration="1200">
             <p>Alsancak'ın Estetik Dokunuşu</p>
-            <h1>Güzelliğin Modern <br>Sanatı</h1>
             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                 <a href="#services" class="btn-premium">Hizmetleri Gör</a>
                 <a href="https://wa.me/905308775368" class="btn-premium" style="background: var(--gold); color: var(--dark);">Randevu Al</a>
@@ -332,39 +457,108 @@
         </div>
     </section>
 
-    <!-- Reviews -->
-    <section id="reviews">
-        <div class="section-title">
-            <h2>Danışan Deneyimleri</h2>
-            <div class="line"></div>
-        </div>
-        <div class="swiper reviewSwiper">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide">
-                    <div class="review-card">
-                        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                        <p>"Cildim hiç bu kadar parlamamıştı. Hydrafacial işlemi harika, kesinlikle tavsiye ediyorum."</p>
-                        <span class="reviewer">Güner Şimşek</span>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="review-card">
-                        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                        <p>"Temizlik ve hijyen on numara. Alsancak'ta güvenebileceğiniz nadir yerlerden biri."</p>
-                        <span class="reviewer">Bülent Uzun</span>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="review-card">
-                        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                        <p>"Lazer epilasyon için geliyorum, daha 3. seansta sonuçlar mükemmel. Teşekkürler Mila."</p>
-                        <span class="reviewer">Sevil Özcan</span>
-                    </div>
-                </div>
+
+    <!-- DANISAN DENEYIMLERI - DUVAR TASARIMI -->
+<section id="reviews" class="reviews-wall-section">
+    <div class="section-title" data-aos="fade-up">
+        <h2>Danışan Deneyimleri</h2>
+        <div style="width: 50px; height: 1px; background: #D4AF37; margin: 15px auto;"></div>
+        <p style="font-size: 0.8rem; color: #888; letter-spacing: 2px;">GOOGLE ÜZERİNDEN GERÇEK YORUMLAR</p>
+    </div>
+
+    <div class="wall-wrapper">
+        <!-- Sütun 1: Yukarı Akar -->
+        <div class="wall-column" style="--duration: 40s;">
+            <!-- Kartlar (Sonsuz döngü için aynı kartları 2 kez ekledim) -->
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>Cilt bakımı yaptırdım gerçekten harika hydrafacial ile cildim harika oldu. İşlemler gerçekten işe yarıyor teşekkür ederim.</p>
+                <span class="name">Güner Şimşek</span>
             </div>
-            <div class="swiper-pagination"></div>
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>Tavsiye üzerine gittim ilgi, alaka ve hizmetleri özellikle temizlik ve hijyenin bugünlerde ne kadar önemli olduğunu hissettirdiniz.</p>
+                <span class="name">Bülent Uzun</span>
+            </div>
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>Kendinizi özel hissedeceğiniz, tertemiz ve samimi hizmet alabileceğiniz bir merkez. Selda Hanıma teşekkürler.</p>
+                <span class="name">Hande Ertürk</span>
+            </div>
+            <!-- Döngü Devamı -->
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>Cilt bakımı yaptırdım gerçekten harika hydrafacial ile cildim harika oldu. İşlemler gerçekten işe yarıyor teşekkür ederim.</p>
+                <span class="name">Güner Şimşek</span>
+            </div>
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>Tavsiye üzerine gittim ilgi, alaka ve hizmetleri özellikle temizlik ve hijyenin bugünlerde ne kadar önemli olduğunu hissettirdiniz.</p>
+                <span class="name">Bülent Uzun</span>
+            </div>
         </div>
-    </section>
+
+        <!-- Sütun 2: Aşağı Akar (Reverse) -->
+        <div class="wall-column reverse" style="--duration: 30s;">
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>Tek kelime muhteşem. Güleryüzlü karşılama ve ilgi. Tüm hijyen kurallarına uygun. Gözüm kapalı güveniyorum.</p>
+                <span class="name">Sevda Özkan</span>
+            </div>
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>Süper ilgi 🕊️ deneyimli ve bilgili bir işletme 👌 Yaptırdığım işlemler de gayet özenli ve titiz ✨</p>
+                <span class="name">Dürdane Güleç</span>
+            </div>
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>Lazer epilasyon için gittim gayet profesyonel ve işinin ehli bir ekip güler yüzlü olmalarından çok memnun kaldım.</p>
+                <span class="name">Murat Güleç</span>
+            </div>
+            <!-- Döngü Devamı -->
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>Tek kelime muhteşem. Güleryüzlü karşılama ve ilgi. Tüm hijyen kurallarına uygun. Gözüm kapalı güveniyorum.</p>
+                <span class="name">Sevda Özkan</span>
+            </div>
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>Süper ilgi 🕊️ deneyimli ve bilgili bir işletme 👌 Yaptırdığım işlemler de gayet özenli ve titiz ✨</p>
+                <span class="name">Dürdane Güleç</span>
+            </div>
+        </div>
+
+        <!-- Sütun 3: Yukarı Akar -->
+        <div class="wall-column" style="--duration: 50s;">
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>Lazer epilasyon yaptırdım 5 seans sürdü mükemmel kalitede yapıldı ve hiçbir problem yaşamadım.</p>
+                <span class="name">Berkay Babayiğit</span>
+            </div>
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>Kızım ve kendim için Cilt temizliği Sonrasinda leke ve izler için program yapıldı. Kesinlikle tavsiye ederim.</p>
+                <span class="name">Mehmet Metin</span>
+            </div>
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>İlgi ve alaka üst düzeyde, güler yüzlü ve sıcakkanlı personelleriyle en iyi hizmeti vermektedirler.</p>
+                <span class="name">Server</span>
+            </div>
+            <!-- Döngü Devamı -->
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>Lazer epilasyon yaptırdım 5 seans sürdü mükemmel kalitede yapıldı ve hiçbir problem yaşamadım.</p>
+                <span class="name">Berkay Babayiğit</span>
+            </div>
+            <div class="wall-card">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p>Kızım ve kendim için Cilt temizliği Sonrasinda leke ve izler için program yapıldı. Kesinlikle tavsiye ederim.</p>
+                <span class="name">Mehmet Metin</span>
+            </div>
+        </div>
+    </div>
+</section>
 
     <!-- Contact -->
     <section id="contact">
