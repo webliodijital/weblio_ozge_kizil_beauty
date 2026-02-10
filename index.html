@@ -618,59 +618,82 @@ footer {
 }
 
 
-/* --- YOUTUBE SHORTS SLIDER (HORIZONTAL SCROLL) --- */
+/* --- YOUTUBE SHORTS SLIDER (MOBILE SWIPE FRIENDLY) --- */
 .shorts-slider-section {
     background: #ffffff;
-    padding: 80px 0; /* Yanlarda padding yok çünkü slider tam genişlikte akmalı */
+    padding: 80px 0;
     overflow: hidden;
 }
 
-.shorts-slider-container {
-    padding: 0 5%;
-}
-
-/* Swiper Slayt Ayarları */
 .shortsSwiper {
-    padding: 20px 0 50px 0 !important;
+    padding: 20px 0 60px 0 !important;
 }
 
 .short-slide {
-    width: 300px; /* Sabit genişlik, dikey oran (9:16) için yükseklik otomatik ayarlanacak */
+    width: 280px; /* Mobilde ve masaüstünde ideal dikey genişlik */
     aspect-ratio: 9 / 16;
     border-radius: 20px;
     overflow: hidden;
+    position: relative;
     background: #000;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    transition: var(--transition);
     border: 1px solid rgba(212, 175, 55, 0.1);
+    transition: var(--transition);
+    /* Mobilde iframe üzerinden kaydırmayı sağlayan kritik kod */
+    touch-action: pan-y; 
 }
 
-.short-slide:hover {
-    transform: translateY(-10px);
-    border-color: var(--gold);
+/* Videoların üzerindeki şeffaf katman (Kaydırmayı sağlar) */
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    background: rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.video-overlay.hidden {
+    display: none;
+}
+
+.video-overlay i {
+    color: white;
+    font-size: 3.5rem;
+    opacity: 0.8;
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
 }
 
 .short-slide iframe {
     width: 100%;
     height: 100%;
     border: none;
+    pointer-events: none; /* Kaydırma için başlangıçta devredışı */
+}
+
+/* Video oynatılırken iframe'i etkinleştir */
+.short-slide.playing iframe {
+    pointer-events: auto;
 }
 
 /* YouTube Takip Butonu */
 .yt-action-wrapper {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
 .btn-youtube-follow {
     padding: 16px 40px;
-    background: #FF0000; /* YouTube Kırmızısı */
+    background: #FF0000;
     color: #fff;
     text-decoration: none;
     border-radius: 50px;
     font-weight: 600;
     font-size: 0.9rem;
-    letter-spacing: 1px;
     display: inline-flex;
     align-items: center;
     gap: 12px;
@@ -684,14 +707,8 @@ footer {
     box-shadow: 0 15px 30px rgba(255, 0, 0, 0.3);
 }
 
-/* Mobil Uyumluluk */
 @media (max-width: 768px) {
-    .short-slide {
-        width: 220px; /* Mobilde dikey videolar biraz daha dar */
-    }
-    .shorts-slider-section {
-        padding: 50px 0;
-    }
+    .short-slide { width: 230px; } /* Mobilde biraz daha dar */
 }
 
     </style>
@@ -860,52 +877,57 @@ footer {
 
 
 <!-- YOUTUBE SHORTS SLIDER SECTION -->
+<!-- YOUTUBE SHORTS SLIDER -->
 <section id="mila-shorts" class="shorts-slider-section">
-    <div class="section-title" data-aos="fade-up">
-        <h2>Mila'yı Keşfedin</h2>
+    <div class="section-title">
+        <h2>Mila Shorts</h2>
         <div style="width: 40px; height: 1px; background: #D4AF37; margin: 15px auto;"></div>
         <p style="font-size: 0.75rem; color: #888; letter-spacing: 2px;">VİDEO REHBERİMİZ</p>
     </div>
 
     <div class="shorts-slider-container">
-        <!-- Swiper -->
         <div class="swiper shortsSwiper">
             <div class="swiper-wrapper">
-                <!-- Short 1 -->
+                <!-- Video 1 -->
                 <div class="swiper-slide short-slide">
-                    <iframe src="https://www.youtube.com/embed/_EMRnNRq42s" title="Mila Shorts" allowfullscreen loading="lazy"></iframe>
+                    <div class="video-overlay" onclick="playVideo(this)"><i class="fab fa-youtube"></i></div>
+                    <iframe src="https://www.youtube.com/embed/_EMRnNRq42s?enablejsapi=1" loading="lazy"></iframe>
                 </div>
-                <!-- Short 2 -->
+                <!-- Video 2 -->
                 <div class="swiper-slide short-slide">
-                    <iframe src="https://www.youtube.com/embed/jHeAANFqY9Q" title="Mila Shorts" allowfullscreen loading="lazy"></iframe>
+                    <div class="video-overlay" onclick="playVideo(this)"><i class="fab fa-youtube"></i></div>
+                    <iframe src="https://www.youtube.com/embed/jHeAANFqY9Q?enablejsapi=1" loading="lazy"></iframe>
                 </div>
-                <!-- Short 3 -->
+                <!-- Video 3 -->
                 <div class="swiper-slide short-slide">
-                    <iframe src="https://www.youtube.com/embed/DcinGWhtUGE" title="Mila Shorts" allowfullscreen loading="lazy"></iframe>
+                    <div class="video-overlay" onclick="playVideo(this)"><i class="fab fa-youtube"></i></div>
+                    <iframe src="https://www.youtube.com/embed/DcinGWhtUGE?enablejsapi=1" loading="lazy"></iframe>
                 </div>
-                <!-- Short 4 -->
+                <!-- Video 4 -->
                 <div class="swiper-slide short-slide">
-                    <iframe src="https://www.youtube.com/embed/jHeAANFqY9Q" title="Mila Shorts" allowfullscreen loading="lazy"></iframe>
+                    <div class="video-overlay" onclick="playVideo(this)"><i class="fab fa-youtube"></i></div>
+                    <iframe src="https://www.youtube.com/embed/_EMRnNRq42s?enablejsapi=1" loading="lazy"></iframe>
                 </div>
-                <!-- Short 5 -->
+                <!-- Video 5 -->
                 <div class="swiper-slide short-slide">
-                    <iframe src="https://www.youtube.com/embed/_EMRnNRq42s" title="Mila Shorts" allowfullscreen loading="lazy"></iframe>
+                    <div class="video-overlay" onclick="playVideo(this)"><i class="fab fa-youtube"></i></div>
+                    <iframe src="https://www.youtube.com/embed/jHeAANFqY9Q?enablejsapi=1" loading="lazy"></iframe>
                 </div>
-                <!-- Short 6 -->
+                <!-- Video 6 -->
                 <div class="swiper-slide short-slide">
-                    <iframe src="https://www.youtube.com/embed/DcinGWhtUGE" title="Mila Shorts" allowfullscreen loading="lazy"></iframe>
+                    <div class="video-overlay" onclick="playVideo(this)"><i class="fab fa-youtube"></i></div>
+                    <iframe src="https://www.youtube.com/embed/DcinGWhtUGE?enablejsapi=1" loading="lazy"></iframe>
                 </div>
             </div>
-            <!-- Pagination dots -->
+            <!-- Noktalı navigasyon -->
             <div class="swiper-pagination"></div>
         </div>
     </div>
 
-    <!-- YouTube Action Button -->
-    <div class="yt-action-wrapper" data-aos="zoom-in">
+    <!-- YouTube Butonu -->
+    <div class="yt-action-wrapper">
         <a href="https://www.youtube.com/@MilaBeautyCare" target="_blank" class="btn-youtube-follow">
-            <i class="fab fa-youtube" style="font-size: 1.4rem;"></i>
-            Bizi YouTube'dan Takip Edin
+            <i class="fab fa-youtube"></i> Bizi YouTube'dan Takip Edin
         </a>
     </div>
 </section>
@@ -1203,26 +1225,35 @@ function handleComparison(input) {
 
 
 // YouTube Shorts Slider Başlatma
-new Swiper(".shortsSwiper", {
-    slidesPerView: "auto", // Genişliğe göre sığdır
-    spaceBetween: 20,      // Videolar arası boşluk
-    centeredSlides: true,  // Aktif slaytı ortala
-    loop: true,            // Sonsuz döngü
-    autoplay: {
-        delay: 3500,
-        disableOnInteraction: false,
-    },
+// Swiper Başlatma
+const shortsSwiper = new Swiper(".shortsSwiper", {
+    slidesPerView: "auto",
+    spaceBetween: 20,
+    centeredSlides: true,
+    loop: true,
+    simulateTouch: true,
+    touchStartPreventDefault: false,
     pagination: {
         el: ".swiper-pagination",
         clickable: true,
-    },
-    breakpoints: {
-        // Ekran boyutuna göre boşluk ayarları
-        768: {
-            spaceBetween: 30,
-        }
     }
 });
+
+// Video Oynatma ve Overlay Kaldırma Fonksiyonu
+function playVideo(overlay) {
+    const slide = overlay.parentElement;
+    const iframe = slide.querySelector('iframe');
+    
+    // Overlay'i gizle ve slide'a oynatılıyor sınıfı ekle
+    overlay.classList.add('hidden');
+    slide.classList.add('playing');
+    
+    // Videoyu otomatik başlat (URL'e autoplay parametresi ekle)
+    const currentSrc = iframe.src;
+    if (currentSrc.indexOf('autoplay') === -1) {
+        iframe.src = currentSrc + (currentSrc.indexOf('?') === -1 ? '?' : '&') + 'autoplay=1';
+    }
+}
     </script>
 </body>
 </html>
