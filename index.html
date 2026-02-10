@@ -701,6 +701,7 @@ footer {
     box-shadow: 0 10px 20px rgba(255, 0, 0, 0.2);
 }
 
+
 .btn-youtube-follow:hover {
     background: #cc0000;
     transform: translateY(-3px);
@@ -709,6 +710,19 @@ footer {
 
 @media (max-width: 768px) {
     .short-slide { width: 230px; } /* Mobilde biraz daha dar */
+}
+
+
+.weblio-link {
+    color: #888; /* Başlangıçta daha sönük, rahatsız etmeyen bir gri */
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.weblio-link:hover {
+    color: var(--gold); /* Üzerine gelince markanın altın rengine döner */
+    letter-spacing: 2px; /* Hafif genişleme efekti ile premium bir his verir */
 }
 
     </style>
@@ -1154,9 +1168,14 @@ footer {
         </div>
     </div>
 
-    <div class="footer-bottom">
-        <p>© 2024 Mila Beauty Care. Tüm hakları saklıdır. | Modern Aesthetics in Alsancak</p>
-    </div>
+    <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 30px; margin-top: 40px; text-align: center;">
+    <p style="font-size: 0.75rem; color: #666; letter-spacing: 1px;">
+        © 2024 Mila Beauty Care. Tüm hakları saklıdır.
+    </p>
+    <p style="font-size: 0.7rem; color: #444; margin-top: 10px; letter-spacing: 1px;">
+        Powered by <a href="https://weblio.com" target="_blank" class="weblio-link">Weblio</a>
+    </p>
+</div>
 </footer>
 
     <!-- JS Scripts -->
