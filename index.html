@@ -34,8 +34,28 @@
         h1, h2, h3, .luxury-font { font-family: 'Playfair Display', serif; }
 
         /* Loader */
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .loader-content { color: var(--primary); text-align: center; }
+        #loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-dark); /* Arka plan rengi DATA'dan gelen bg-dark olacak */
+    z-index: 10000; /* Her şeyin üstünde */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.loader-content {
+    text-align: center;
+    color: var(--primary); /* Metin rengi DATA'dan gelen primary rengi */
+}
+
+#loader-logo {
+    filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.2)); /* Logoya hafif bir ışıltı verir */
+}
 
         /* Navigation */
         nav { position: fixed; top: 0; width: 100%; padding: 30px 5%; z-index: 1000; display: flex; justify-content: space-between; align-items: center; transition: var(--transition); background: transparent; }
@@ -154,7 +174,17 @@
 </head>
 <body>
 
-    <div id="loader"><div class="loader-content"><h2 class="luxury-font" id="loader-name">Yükleniyor...</h2></div></div>
+    <!-- DİNAMİK LOGOLU LOADER -->
+<div id="loader">
+    <div class="loader-content">
+        <!-- Logo buraya JS ile basılacak -->
+        <img id="loader-logo" src="" alt="Logo" style="height: 120px; margin-bottom: 25px; display: block; margin-left: auto; margin-right: auto; opacity: 0; transform: scale(0.8);">
+        <!-- İsim buraya JS ile basılacak -->
+        <h2 class="luxury-font" id="loader-name" style="opacity: 0; letter-spacing: 5px; text-transform: uppercase; font-size: 1.5rem;"></h2>
+        <!-- Zarif yüklenme çizgisi -->
+        <div id="loader-line" style="width: 0%; height: 1px; background: var(--primary); margin: 20px auto 0; opacity: 0.5;"></div>
+    </div>
+</div>
 
     <nav id="navbar">
         <div class="logo"><img id="main-logo" src="" alt="Logo"></div>
@@ -406,7 +436,7 @@
         */
 
         function initData() {
-            // Renkleri CSS Değişkenlerine Aktar (Master Renk Yönetimi)
+            // 1. Renk Yönetimi (Master Renk Skalası)
             const r = document.documentElement.style;
             r.setProperty('--primary', DATA.colors.primary);
             r.setProperty('--primary-dark', DATA.colors.primaryDark);
@@ -414,13 +444,22 @@
             r.setProperty('--bg-dark', DATA.colors.bgDark);
             r.setProperty('--bg-light', DATA.colors.bgLight);
 
+            // 2. Meta & Loader Başlatma
             document.title = DATA.title;
             document.getElementById('meta-title').innerText = DATA.title;
-            document.getElementById('meta-description').setAttribute("content", DATA.description);
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) metaDesc.setAttribute("content", DATA.description);
+            
+            // Loader'a Dinamik Veri Basma
             document.getElementById('loader-name').innerText = DATA.businessName;
+            document.getElementById('loader-logo').src = DATA.assets.logo;
+            document.getElementById('loader-name').style.color = DATA.colors.primary;
+
+            // 3. Header & Footer Logos
             document.getElementById('main-logo').src = DATA.assets.logo;
             document.getElementById('footer-logo').src = DATA.assets.logoWhite;
 
+            // 4. Hero Bölümü
             const hero = document.querySelector('.hero');
             const isMobile = window.innerWidth <= 767;
             hero.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${isMobile ? DATA.assets.heroMobile : DATA.assets.heroDesktop}')`;
@@ -428,50 +467,95 @@
             document.getElementById('hero-title').innerText = DATA.slogan;
             document.getElementById('hero-randevu-btn').href = `https://wa.me/${DATA.contact.whatsapp}`;
 
+            // 5. Hizmetler (Dinamik Kartlar)
             const sGrid = document.getElementById('services-container');
             const fList = document.getElementById('footer-services-list');
+            sGrid.innerHTML = ""; fList.innerHTML = "";
             DATA.services.forEach(s => {
-                sGrid.innerHTML += `<div class="service-card" data-aos="fade-up"><div class="service-img-wrapper"><img src="${s.img}" class="service-card-img"></div><h3>${s.title}</h3><p>${s.desc}</p></div>`;
+                sGrid.innerHTML += `
+                    <div class="service-card" data-aos="fade-up">
+                        <div class="service-img-wrapper">
+                            <img src="${s.img}" class="service-card-img" loading="lazy">
+                        </div>
+                        <h3>${s.title}</h3>
+                        <p>${s.desc}</p>
+                    </div>`;
                 fList.innerHTML += `<li><a href="#services">${s.title}</a></li>`;
             });
 
+            // 6. Değişimler (Before/After Side-by-Side)
             const tGrid = document.getElementById('transformations-container');
+            tGrid.innerHTML = "";
             DATA.transformations.forEach(t => {
-                tGrid.innerHTML += `<div class="comparison-item" data-aos="fade-up"><div class="comparison-container"><div class="label-before">Önce</div><div class="label-after">Sonra</div><img src="${t.before}" class="comparison-img img-before"><img src="${t.after}" class="comparison-img img-after"><input type="range" min="0" max="100" value="50" class="comparison-input" oninput="handleComparison(this)"><div class="comparison-slider-handle"><div class="slider-button"><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-right"></i></div></div></div><div style="text-align:center; margin-top:15px;"><h3>${t.title}</h3><p style="color:var(--primary)">${t.subtitle}</p></div></div>`;
+                tGrid.innerHTML += `
+                    <div class="comparison-item" data-aos="fade-up">
+                        <div class="comparison-container">
+                            <div class="label-before">Önce</div><div class="label-after">Sonra</div>
+                            <img src="${t.before}" class="comparison-img img-before">
+                            <img src="${t.after}" class="comparison-img img-after">
+                            <input type="range" min="0" max="100" value="50" class="comparison-input" oninput="handleComparison(this)">
+                            <div class="comparison-slider-handle"><div class="slider-button"><i class="fas fa-chevron-left"></i><i class="fas fa-chevron-right"></i></div></div>
+                        </div>
+                        <div style="text-align:center; margin-top:15px;">
+                            <h3 class="luxury-font">${t.title}</h3>
+                            <p style="color:var(--primary)">${t.subtitle}</p>
+                        </div>
+                    </div>`;
             });
 
+            // 7. Kampanya
             document.getElementById('campaign-title').innerText = DATA.campaign.title;
             document.getElementById('campaign-desc').innerText = DATA.campaign.desc;
             document.getElementById('campaign-btn').href = `https://wa.me/${DATA.contact.whatsapp}?text=${encodeURIComponent(DATA.campaign.whatsappMsg)}`;
 
+            // 8. Video Shorts (Döngü İçin Çoğaltılmış)
             const ytCont = document.getElementById('shorts-container');
+            ytCont.innerHTML = "";
             [...DATA.shorts, ...DATA.shorts].forEach(id => {
-                ytCont.innerHTML += `<div class="swiper-slide video-slide"><div class="video-overlay" onclick="playVideo(this)"><i class="fab fa-youtube"></i></div><iframe src="https://www.youtube.com/embed/${id}?enablejsapi=1" loading="lazy"></iframe></div>`;
+                ytCont.innerHTML += `
+                    <div class="swiper-slide video-slide">
+                        <div class="video-overlay" onclick="playVideo(this)"><i class="fab fa-youtube"></i></div>
+                        <iframe src="https://www.youtube.com/embed/${id}?enablejsapi=1" loading="lazy"></iframe>
+                    </div>`;
             });
 
+            // 9. Instagram GIF Slider
             const instaCont = document.getElementById('reels-container');
+            instaCont.innerHTML = "";
             [...DATA.instaGifs, ...DATA.instaGifs].forEach(gif => {
-                instaCont.innerHTML += `<div class="swiper-slide video-slide"><img src="${gif}" alt="Instagram"></div>`;
+                instaCont.innerHTML += `<div class="swiper-slide video-slide"><img src="${gif}" alt="Instagram" loading="lazy"></div>`;
             });
 
+            // 10. Güzellik Galerisi
             const gCont = document.getElementById('gallery-container');
-            DATA.gallery.forEach(img => { gCont.innerHTML += `<div class="swiper-slide"><img src="${img}"></div>`; });
+            gCont.innerHTML = "";
+            DATA.gallery.forEach(img => { gCont.innerHTML += `<div class="swiper-slide"><img src="${img}" loading="lazy"></div>`; });
 
+            // 11. Hakkımızda Bölümü
             document.getElementById('about-img').src = DATA.assets.about;
             document.getElementById('about-name').innerText = DATA.businessName;
             document.getElementById('about-text').innerText = DATA.description;
 
+            // 12. Reviews Wall (Akan Duvar)
             const wall = document.getElementById('wall-wrapper');
+            wall.innerHTML = "";
             const cols = [[], [], []];
             DATA.reviews.forEach((r, i) => cols[i % 3].push(r));
             cols.forEach((colData, idx) => {
                 let html = `<div class="wall-column ${idx === 1 ? 'reverse' : ''}" style="--duration: ${35 + idx*5}s">`;
                 [...colData, ...colData].forEach(r => {
-                    html += `<div class="wall-card"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p>${r.text}</p><span class="name">${r.name}</span></div>`;
+                    html += `
+                        <div class="wall-card">
+                            <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                            <p>${r.text}</p>
+                            <span class="name">${r.name}</span>
+                        </div>`;
                 });
-                html += `</div>`; wall.innerHTML += html;
+                html += `</div>`;
+                wall.innerHTML += html;
             });
 
+            // 13. İletişim & Harita
             document.getElementById('contact-address').innerText = DATA.contact.address;
             document.getElementById('contact-phone-link').innerText = DATA.contact.phone;
             document.getElementById('contact-phone-link').href = `tel:${DATA.contact.phoneRaw}`;
@@ -481,13 +565,16 @@
             document.getElementById('google-review-btn').href = DATA.contact.googleMapsLink;
             document.getElementById('youtube-follow-btn').href = DATA.contact.youtube;
             document.getElementById('insta-follow-btn').href = DATA.contact.instagram;
-            document.getElementById('map-frame-container').innerHTML = `<iframe src="${DATA.contact.googleMapsEmbed}" loading="lazy"></iframe>`;
+            document.getElementById('map-frame-container').innerHTML = `
+                <iframe src="${DATA.contact.googleMapsEmbed}" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
 
+            // 14. Footer Socials & Copyright
             const fSoc = document.getElementById('footer-socials');
-            if(DATA.contact.instagram !== "#") fSoc.innerHTML += `<a href="${DATA.contact.instagram}" target="_blank"><i class="fab fa-instagram"></i></a>`;
-            if(DATA.contact.youtube !== "#") fSoc.innerHTML += `<a href="${DATA.contact.youtube}" target="_blank"><i class="fab fa-youtube"></i></a>`;
-            if(DATA.contact.tiktok !== "#") fSoc.innerHTML += `<a href="${DATA.contact.tiktok}" target="_blank"><i class="fab fa-tiktok"></i></a>`;
-            if(DATA.contact.facebook !== "#") fSoc.innerHTML += `<a href="${DATA.contact.facebook}" target="_blank"><i class="fab fa-facebook-f"></i></a>`;
+            fSoc.innerHTML = "";
+            if(DATA.contact.instagram) fSoc.innerHTML += `<a href="${DATA.contact.instagram}" target="_blank"><i class="fab fa-instagram"></i></a>`;
+            if(DATA.contact.youtube) fSoc.innerHTML += `<a href="${DATA.contact.youtube}" target="_blank"><i class="fab fa-youtube"></i></a>`;
+            if(DATA.contact.tiktok) fSoc.innerHTML += `<a href="${DATA.contact.tiktok}" target="_blank"><i class="fab fa-tiktok"></i></a>`;
+            if(DATA.contact.facebook) fSoc.innerHTML += `<a href="${DATA.contact.facebook}" target="_blank"><i class="fab fa-facebook-f"></i></a>`;
             
             document.getElementById('footer-desc').innerText = DATA.description;
             document.getElementById('copy-name').innerText = DATA.businessName;
@@ -495,33 +582,55 @@
             document.getElementById('float-wa').href = `https://wa.me/${DATA.contact.whatsapp}`;
         }
 
+        /* --- LÜKS AÇILIŞ VE LOADER ANIMASYONU --- */
         window.addEventListener('load', () => {
-            initData();
-            gsap.to("#loader", { opacity: 0, duration: 0.5, onComplete: () => {
-                document.getElementById('loader').style.display = 'none';
-                AOS.init({ duration: 1000, once: true });
-                
-                const commonOpt = { slidesPerView: "auto", spaceBetween: 20, centeredSlides: true, loop: true, simulateTouch: true, touchStartPreventDefault: false, observer: true, observeParents: true, pagination: { el: ".swiper-pagination", clickable: true } };
-                
-                const yt = new Swiper(".ytSwiper", commonOpt);
-                const insta = new Swiper(".instaSwiper", commonOpt);
-                const gall = new Swiper(".gallerySwiper", { effect: "coverflow", slidesPerView: "auto", centeredSlides: true, loop: true, autoplay: { delay: 3000 }, observer: true, observeParents: true });
-                
-                setTimeout(() => { yt.update(); insta.update(); gall.update(); }, 500);
-            }});
+            initData(); // Önce verileri enjekte et
+
+            const tl = gsap.timeline();
+
+            // 1. Loader İçeriğini Belirt (Logo ve İsim)
+            tl.to("#loader-logo", { opacity: 1, scale: 1, duration: 1.2, ease: "power3.out" })
+              .to("#loader-name", { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, "-=0.6")
+              .to("#loader-line", { width: "120px", duration: 1, ease: "expo.inOut" }, "-=0.4");
+
+            // 2. Kısa Bir Bekleme (Resimlerin tam çözünürlükte gelmesi için zaman tanı)
+            tl.to({}, { duration: 0.5 }); 
+
+            // 3. Loader'ı Akıcı Bir Şekilde Kaldır
+            tl.to("#loader", { 
+                opacity: 0, 
+                duration: 1, 
+                ease: "power3.inOut",
+                onComplete: () => {
+                    document.getElementById('loader').style.display = 'none';
+                    AOS.init({ duration: 1000, once: true, offset: 100 });
+                    
+                    // 4. Slider'ları Başlat ve Yenile
+                    const commonOpt = { slidesPerView: "auto", spaceBetween: 20, centeredSlides: true, loop: true, simulateTouch: true, touchStartPreventDefault: false, observer: true, observeParents: true, pagination: { el: ".swiper-pagination", clickable: true } };
+                    
+                    const yt = new Swiper(".ytSwiper", commonOpt);
+                    const insta = new Swiper(".instaSwiper", commonOpt);
+                    const gall = new Swiper(".gallerySwiper", { effect: "coverflow", slidesPerView: "auto", centeredSlides: true, loop: true, autoplay: { delay: 3000 }, observer: true, observeParents: true });
+                    
+                    setTimeout(() => { yt.update(); insta.update(); gall.update(); }, 400);
+                }
+            });
         });
 
+        /* --- YARDIMCI FONKSİYONLAR --- */
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
             if (window.scrollY > 50) nav.classList.add('sticky'); else nav.classList.remove('sticky');
         });
 
         function toggleMenu() { document.getElementById('mobileNav').classList.toggle('active'); }
+
         function handleComparison(input) {
             const container = input.parentElement;
             container.querySelector('.img-before').style.width = input.value + '%';
             container.querySelector('.comparison-slider-handle').style.left = input.value + '%';
         }
+
         function playVideo(overlay) {
             const slide = overlay.parentElement;
             overlay.classList.add('hidden');
